@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  Church, 
-  Menu, 
-  X,
-  Lock
+import {
+  Church,
+  Menu,
+  X
 } from 'lucide-react';
 import { Language, translations } from '../data/translations';
 
@@ -121,18 +120,6 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          {/* Admin Login Button */}
-          {onOpenAdmin && (
-            <button
-              onClick={onOpenAdmin}
-              id="header-admin-login-button"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1C2026] text-white hover:bg-black text-xs font-bold transition-all cursor-pointer shadow-2xs"
-              title="Admin & Leadership Login"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#DFC8A4]" />
-              <span>Admin</span>
-            </button>
-          )}
         </div>
 
         {/* Tablet & Mobile Menu Toggle */}

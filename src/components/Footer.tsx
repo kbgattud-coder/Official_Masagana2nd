@@ -119,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({
             {footer.disclaimer}
           </p>
           <p className="text-[11px] mt-1 text-[#95A0AC]">
-            © {new Date().getFullYear()} Masagana 2nd Ward • The Church of Jesus Christ of Latter-day Saints.
+            © {new Date().getFullYear()} Masagana 2nd Ward. This is not an official website of The Church of Jesus Christ of Latter-day Saints.
           </p>
         </div>
 
