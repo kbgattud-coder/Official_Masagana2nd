@@ -639,7 +639,7 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
                       <input
                         type="url"
                         value={authorAvatar}
-                        onChange={(e) => setAuthorAvatar(e.target.value)}
+                        onChange={(e) => setAuthorAvatar(normalizeImageUrl(e.target.value))}
                         placeholder="Avatar photo URL (or leave empty for initial)"
                         className="flex-1 px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#D9D2C4] text-[#1E232A] text-xs placeholder-[#8C97A4] focus:outline-hidden focus:border-[#554228] focus:ring-1 focus:ring-[#554228]"
                       />
@@ -675,7 +675,7 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
                 <input
                   type="url"
                   value={thumbnailUrl}
-                  onChange={(e) => setThumbnailUrl(e.target.value)}
+                  onChange={(e) => setThumbnailUrl(normalizeImageUrl(e.target.value))}
                   placeholder="Or enter image URL (https://images.unsplash.com/...)"
                   className="w-full px-3.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#D9D2C4] text-[#1E232A] text-xs placeholder-[#8C97A4] focus:outline-hidden focus:border-[#554228] focus:ring-1 focus:ring-[#554228] mb-3"
                 />
@@ -725,7 +725,7 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
                   <input
                     type="url"
                     value={newGalleryImg}
-                    onChange={(e) => setNewGalleryImg(e.target.value)}
+                    onChange={(e) => setNewGalleryImg(normalizeImageUrl(e.target.value))}
                     placeholder="Or paste image URL to attach..."
                     className="flex-1 px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#D9D2C4] text-[#1E232A] text-xs placeholder-[#8C97A4] focus:outline-hidden focus:border-[#554228] focus:ring-1 focus:ring-[#554228]"
                   />

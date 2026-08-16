@@ -884,7 +884,7 @@ export const GalleryManager: React.FC<GalleryManagerProps> = ({
                       type="url"
                       placeholder="https://images.unsplash.com/... or direct image link"
                       value={albumCoverUrl}
-                      onChange={(e) => setAlbumCoverUrl(e.target.value)}
+                      onChange={(e) => setAlbumCoverUrl(normalizeImageUrl(e.target.value))}
                       className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E6E1D8] text-xs text-[#1E232A] focus:outline-hidden focus:border-[#554228] transition-all font-medium"
                     />
                     {albumCoverUrl && (
