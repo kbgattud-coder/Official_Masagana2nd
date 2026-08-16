@@ -2,8 +2,8 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
-import { handleLogin } from './api/_lib/auth';
-import { fetchFolderPhotos } from './api/_lib/drive';
+import { handleLogin } from './api/_lib/auth.js';
+import { fetchFolderPhotos } from './api/_lib/drive.js';
 
 dotenv.config();
 

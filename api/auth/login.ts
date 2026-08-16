@@ -1,4 +1,4 @@
-import { handleLogin } from '../_lib/auth';
+import { handleLogin } from '../_lib/auth.js';
 
 export default function handler(req: any, res: any) {
   if (req.method !== 'POST') {
