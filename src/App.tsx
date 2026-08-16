@@ -12,6 +12,7 @@ import { GallerySection } from './components/GallerySection';
 import { AlbumPage } from './components/AlbumPage';
 import { HistorySection } from './components/HistorySection';
 import { BlogSection } from './components/BlogSection';
+import { ArticlePage } from './components/ArticlePage';
 import { Footer } from './components/Footer';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -20,8 +21,9 @@ import { AdminUser } from './types';
 import { Language } from './data/translations';
 
 export default function App() {
-  const [viewMode, setViewMode] = useState<'website' | 'admin-login' | 'admin-dashboard' | 'album-view'>('website');
+  const [viewMode, setViewMode] = useState<'website' | 'admin-login' | 'admin-dashboard' | 'album-view' | 'article-view'>('website');
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => AdminAuth.getCurrentUser());
   const [activeTab, setActiveTab] = useState<string>('bulletin');
   const [lang, setLang] = useState<Language>('en'); // Default to English as requested
@@ -84,6 +86,41 @@ export default function App() {
 
   const handleNavigateFromAlbum = (sectionId: string) => {
     setSelectedAlbumId(null);
+    setViewMode('website');
+    setActiveTab(sectionId);
+    setTimeout(() => {
+      if (sectionId === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
+  };
+
+  const handleOpenArticle = (articleId: string) => {
+    setSelectedArticleId(articleId);
+    setViewMode('article-view');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const handleBackToBlog = () => {
+    setSelectedArticleId(null);
+    setViewMode('website');
+    setTimeout(() => {
+      const element = document.getElementById('blog');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 50);
+  };
+
+  const handleNavigateFromArticle = (sectionId: string) => {
+    setSelectedArticleId(null);
     setViewMode('website');
     setActiveTab(sectionId);
     setTimeout(() => {
@@ -163,7 +200,21 @@ export default function App() {
     );
   }
 
-  // 4. Public Ward Website Home View
+  // 4. Dedicated Article Full Page View
+  if (viewMode === 'article-view' && selectedArticleId) {
+    return (
+      <ArticlePage
+        articleId={selectedArticleId}
+        onBack={handleBackToBlog}
+        lang={lang}
+        setLang={setLang}
+        onOpenAdmin={handleOpenAdmin}
+        onNavigateHomeSection={handleNavigateFromArticle}
+      />
+    );
+  }
+
+  // 5. Public Ward Website Home View
   return (
     <div className="min-h-screen bg-[#EDEBE8] text-[#1E232A] flex flex-col font-sans selection:bg-[#E2D5C3] selection:text-[#1E232A]">
       {/* Top Floating Header with Simplified Navigation, Language Selector & Admin Link */}
@@ -196,7 +247,7 @@ export default function App() {
         />
 
         {/* Spiritual Blog & Articles Section */}
-        <BlogSection lang={lang} />
+        <BlogSection lang={lang} onOpenArticle={handleOpenArticle} />
 
         {/* Ward History Section (1991–Present) */}
         <HistorySection lang={lang} />

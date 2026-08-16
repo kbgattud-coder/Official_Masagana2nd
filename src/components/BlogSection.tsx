@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  BookOpen, 
-  Clock, 
-  Calendar, 
-  ChevronRight, 
-  X, 
-  Layers
+import {
+  BookOpen,
+  Clock,
+  Calendar,
+  ChevronRight
 } from 'lucide-react';
 import { useAdminData } from '../data/adminStore';
-import { BlogPost } from '../types';
 import { Language, translations } from '../data/translations';
 
 interface BlogSectionProps {
   lang: Language;
+  onOpenArticle: (articleId: string) => void;
 }
 
 // Helper to get initial letter of first name
@@ -67,21 +65,24 @@ export const AuthorAvatar: React.FC<{
   );
 };
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ lang }) => {
+export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle }) => {
   const { articles } = useAdminData();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery] = useState<string>('');
-  const [activePost, setActivePost] = useState<BlogPost | null>(null);
   const t = translations[lang];
   const blog = t.blog;
 
   const categories = [
     'All',
-    'Bishopric Message',
+    'Messages from the Bishopric',
+    'Sacrament Talk Spotlight',
+    'Missionary Letters',
+    'Youth',
+    'Primary',
     'Relief Society',
-    'Youth Spotlight',
-    'Spiritual Thought',
-    'Family History',
+    'Elders Quorum',
+    'Ward Activities',
+    'Temple & Family History',
     'Ward News'
   ];
 
@@ -139,7 +140,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang }) => {
           return (
             <div
               key={post.id}
-              onClick={() => setActivePost(post)}
+              onClick={() => onOpenArticle(post.id)}
               className="bg-[#FFFFFF] border border-[#E4DFD5] rounded-3xl overflow-hidden shadow-xs hover:border-[#D0C8BB] transition-all flex flex-col justify-between group cursor-pointer"
             >
               <div>
@@ -204,111 +205,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang }) => {
         })}
       </div>
 
-      {/* FULL ARTICLE READER MODAL */}
-      {activePost && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-[#FFFFFF] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#D5CEC2] flex flex-col">
-            
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-[#ECE7DE] flex items-center justify-between z-20">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#554228]">
-                {activePost.category}
-              </span>
-
-              <button
-                onClick={() => setActivePost(null)}
-                aria-label="Close Article"
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-700 transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Article Body */}
-            <div className="p-6 sm:p-8">
-              {activePost.imageUrl && (
-                <div className="h-56 rounded-2xl overflow-hidden mb-6 shadow-xs">
-                  <img
-                    src={activePost.imageUrl}
-                    alt={activePost.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-
-              <h2 className="text-2xl sm:text-3xl font-serif-heading font-bold text-[#1C2026] leading-tight mb-3">
-                {activePost.title}
-              </h2>
-
-              <p className="text-sm sm:text-base font-medium text-[#525D6B] mb-4 leading-relaxed">
-                {activePost.subtitle}
-              </p>
-
-              {/* Scripture Anchor */}
-              {activePost.scriptureReference && (
-                <div className="p-3.5 rounded-xl bg-[#FAF4E8] border border-[#EADFCB] text-xs font-semibold text-[#554228] mb-6 inline-block">
-                  📖 Scripture Study Anchor: {activePost.scriptureReference}
-                </div>
-              )}
-
-              {/* Author Bar */}
-              <div className="flex items-center gap-3 py-3 border-y border-[#ECE7DE] mb-6">
-                <AuthorAvatar
-                  name={activePost.author.name}
-                  avatarUrl={activePost.author.avatarUrl}
-                  size="lg"
-                />
-                <div>
-                  <h4 className="text-xs font-bold text-[#1C2026]">{activePost.author.name}</h4>
-                  <p className="text-[11px] text-[#7A8694]">{activePost.author.role} • {activePost.date}</p>
-                </div>
-              </div>
-
-              {/* Article Content Rendered with Rich HTML or Paragraph Fallback */}
-              {activePost.richHtml ? (
-                <div 
-                  className="space-y-4 text-sm sm:text-base text-[#2C3540] leading-relaxed font-serif"
-                  dangerouslySetInnerHTML={{ __html: activePost.richHtml }}
-                />
-              ) : (
-                <div className="space-y-4 text-sm sm:text-base text-[#2C3540] leading-relaxed font-sans">
-                  {activePost.content.map((p, idx) => (
-                    <p key={idx}>{p}</p>
-                  ))}
-                </div>
-              )}
-
-              {/* Additional Photo Gallery Images */}
-              {activePost.galleryImages && activePost.galleryImages.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-[#ECE7DE]">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#554228] mb-3 flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5" />
-                    <span>Attached Photo Gallery</span>
-                  </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {activePost.galleryImages.map((img, i) => (
-                      <div key={i} className="rounded-2xl overflow-hidden border border-[#ECE7DE] aspect-4/3 bg-black">
-                        <img src={img} alt={`Attached photo ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-[#FAF8F5] px-6 py-4 border-t border-[#ECE7DE] flex items-center justify-between text-xs text-[#7A8694]">
-              <span>Masagana 2nd Ward • {activePost.category}</span>
-              <button
-                onClick={() => setActivePost(null)}
-                className="px-4 py-1.5 rounded-full bg-[#1C2026] text-white font-semibold text-xs hover:bg-black transition-colors cursor-pointer"
-              >
-                Close Article
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

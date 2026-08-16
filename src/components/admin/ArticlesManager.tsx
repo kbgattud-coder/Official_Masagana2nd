@@ -29,11 +29,15 @@ interface ArticlesManagerProps {
 }
 
 const CATEGORIES = [
-  'Bishopric Message',
-  'Spiritual Thought',
-  'Youth Spotlight',
-  'Family History',
+  'Messages from the Bishopric',
+  'Sacrament Talk Spotlight',
+  'Missionary Letters',
+  'Youth',
+  'Primary',
   'Relief Society',
+  'Elders Quorum',
+  'Ward Activities',
+  'Temple & Family History',
   'Ward News'
 ] as const;
 
@@ -53,7 +57,7 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
   // Form State
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
-  const [category, setCategory] = useState<typeof CATEGORIES[number]>('Bishopric Message');
+  const [category, setCategory] = useState<typeof CATEGORIES[number]>('Messages from the Bishopric');
   const [authorName, setAuthorName] = useState('Bishop Francisco Reyes');
   const [authorRole, setAuthorRole] = useState('Bishop, Masagana 2nd Ward');
   const [authorAvatar, setAuthorAvatar] = useState('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop');

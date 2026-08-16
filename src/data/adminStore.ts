@@ -85,12 +85,29 @@ function getLocalItem<T>(key: string, fallback: T): T {
   }
 }
 
+// Articles saved before the August 2026 category revamp carry retired
+// category names; map them onto the current set so filters and the
+// editor's dropdown still match.
+const LEGACY_ARTICLE_CATEGORIES: Record<string, BlogPost['category']> = {
+  'Bishopric Message': 'Messages from the Bishopric',
+  'Spiritual Thought': 'Sacrament Talk Spotlight',
+  'Youth Spotlight': 'Youth',
+  'Family History': 'Temple & Family History',
+};
+
+function migrateArticleCategories(items: BlogPost[]): BlogPost[] {
+  return items.map((a) => {
+    const mapped = LEGACY_ARTICLE_CATEGORIES[a.category as string];
+    return mapped ? { ...a, category: mapped } : a;
+  });
+}
+
 // In-Memory Active Cache for synchronous render performance
 const _memoryCache = {
   announcements: getLocalItem<Announcement[]>(STORAGE_KEYS.ANNOUNCEMENTS, WARD_ANNOUNCEMENTS),
   gallery: getLocalItem<GalleryItem[]>(STORAGE_KEYS.GALLERY, GALLERY_ITEMS),
   albums: getLocalItem<Album[]>(STORAGE_KEYS.ALBUMS, INITIAL_ALBUMS),
-  articles: getLocalItem<BlogPost[]>(STORAGE_KEYS.ARTICLES, BLOG_POSTS),
+  articles: migrateArticleCategories(getLocalItem<BlogPost[]>(STORAGE_KEYS.ARTICLES, BLOG_POSTS)),
   auth: getLocalItem<AdminUser | null>(STORAGE_KEYS.AUTH, null),
   isIdbLoaded: false,
 };
@@ -131,7 +148,7 @@ async function initIndexedDbSync() {
     }
 
     if (idbArt && idbArt.length > 0) {
-      _memoryCache.articles = idbArt;
+      _memoryCache.articles = migrateArticleCategories(idbArt);
       hasUpdates = true;
     } else {
       idbService.setAll(STORES.ARTICLES, _memoryCache.articles);

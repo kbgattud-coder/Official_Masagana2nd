@@ -108,7 +108,7 @@ export interface BlogPost {
   };
   date: string;
   readingTime: string;
-  category: 'Bishopric Message' | 'Spiritual Thought' | 'Youth Spotlight' | 'Family History' | 'Relief Society' | 'Ward News';
+  category: 'Messages from the Bishopric' | 'Sacrament Talk Spotlight' | 'Missionary Letters' | 'Youth' | 'Primary' | 'Relief Society' | 'Elders Quorum' | 'Ward Activities' | 'Temple & Family History' | 'Ward News';
   imageUrl: string;
   content: string[];
   richHtml?: string;
