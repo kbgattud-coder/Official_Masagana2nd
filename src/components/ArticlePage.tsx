@@ -94,7 +94,7 @@ export const ArticlePage: React.FC<ArticlePageProps> = ({
       />
 
       {/* Main Dedicated Article Content */}
-      <main className="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-20">
 
         {/* Article Header Banner */}
         <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-3xl border border-[#E6E1D8] shadow-xs mb-8">
