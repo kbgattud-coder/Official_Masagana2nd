@@ -1,0 +1,55 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="sunset" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E89B77" />
+      <stop offset="35%" stop-color="#DEB097" />
+      <stop offset="70%" stop-color="#C58E6B" />
+      <stop offset="100%" stop-color="#735043" />
+    </linearGradient>
+    <linearGradient id="stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#DFD2C2" />
+      <stop offset="50%" stop-color="#CBBCA9" />
+      <stop offset="100%" stop-color="#B2A18D" />
+    </linearGradient>
+    <linearGradient id="accentStone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D9A86C" />
+      <stop offset="100%" stop-color="#9C6B37" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect width="1920" height="1080" fill="url(#sunset)" />
+  
+  <!-- Clouds -->
+  <ellipse cx="400" cy="200" rx="300" ry="80" fill="#FFF2E6" opacity="0.4" />
+  <ellipse cx="800" cy="150" rx="450" ry="110" fill="#FFE5D4" opacity="0.35" />
+  <ellipse cx="1400" cy="220" rx="380" ry="90" fill="#FFD9C2" opacity="0.4" />
+  
+  <!-- Trees in background -->
+  <path d="M0,900 Q150,750 300,900 Q450,720 600,900 L600,1080 L0,1080 Z" fill="#1C3822" opacity="0.9" />
+  <path d="M1300,900 Q1500,740 1700,900 Q1850,760 1920,900 L1920,1080 L1300,1080 Z" fill="#1C3822" opacity="0.9" />
+  
+  <!-- Chapel Main Sanctuary (Right building) -->
+  <polygon points="1200,950 1200,480 1480,260 1760,480 1760,950" fill="url(#stone)" />
+  <polygon points="1440,260 1480,40 1520,260" fill="#F4EDE4" />
+  <!-- Steeple spire -->
+  <polygon points="1470,40 1480,0 1490,40" fill="#FFFFFF" />
+  
+  <!-- Center stone accent on facade -->
+  <rect x="1410" y="320" width="140" height="420" fill="url(#accentStone)" rx="8" />
+  
+  <!-- Chapel Left Wing (S-120 Hall) -->
+  <polygon points="400,950 400,540 680,360 960,540 960,950" fill="url(#stone)" />
+  <rect x="620" y="440" width="120" height="350" fill="url(#accentStone)" rx="6" />
+  
+  <!-- Connecting Hallway / Entry -->
+  <rect x="940" y="700" width="280" height="250" fill="#C5B5A1" />
+  
+  <!-- Forecourt & Lawn -->
+  <polygon points="0,950 1920,950 1920,1080 0,1080" fill="#2D3B2E" />
+  <polygon points="0,980 1920,980 1920,1080 0,1080" fill="#3D453E" />
+  
+  <!-- Sunset Glow Overlay -->
+  <rect width="1920" height="1080" fill="#FF884D" opacity="0.12" mix-blend-mode="overlay" />
+</svg>

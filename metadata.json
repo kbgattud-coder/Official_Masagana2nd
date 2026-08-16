@@ -1,0 +1,6 @@
+{
+  "name": "Masagana 2nd Ward Community",
+  "description": "A clean, minimalist bento-style website for the Masagana 2nd Ward, Antipolo Philippines Stake, featuring a video hero, digital bulletin board, photo gallery, ward history timeline, and spiritual blog.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
