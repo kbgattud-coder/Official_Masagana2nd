@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Church,
   Menu,
   X
 } from 'lucide-react';
@@ -55,8 +54,8 @@ export const Header: React.FC<HeaderProps> = ({
           id="header-brand-home-link"
           aria-label="Masagana 2nd Ward - Back to Home"
         >
-          <div className="w-10 h-10 rounded-full bg-[#FAF4E8] border border-[#EADFCB] flex items-center justify-center text-[#554228] group-hover:scale-105 transition-transform">
-            <Church className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-[#FAF4E8] border border-[#EADFCB] flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+            <img src="/masagana_logo.svg" alt="Masagana 2nd Ward logo" className="w-full h-full object-cover" />
           </div>
           <div>
             <div className="flex items-center gap-2">
