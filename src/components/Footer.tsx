@@ -1,7 +1,6 @@
 import React from 'react';
-import { 
-  Church, 
-  MapPin, 
+import {
+  MapPin,
   Clock, 
   ExternalLink, 
   ArrowUp,
@@ -35,8 +34,8 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="bg-[#FFFFFF] border border-[#E4DFD5] rounded-3xl p-8 sm:p-9 shadow-xs flex flex-col justify-between w-full h-full">
           <div>
             <div className="flex items-center gap-3.5 mb-5">
-              <div className="w-11 h-11 rounded-2xl bg-[#FAF4E8] border border-[#EADFCB] flex items-center justify-center text-[#554228] shadow-xs shrink-0">
-                <Church className="w-5 h-5" />
+              <div className="w-11 h-11 rounded-2xl bg-[#FAF4E8] border border-[#EADFCB] flex items-center justify-center overflow-hidden shadow-xs shrink-0">
+                <img src="/masagana_logo.svg" alt="Masagana 2nd Ward logo" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="font-semibold text-xl text-[#1C2026] tracking-tight">Masagana 2nd Ward</h3>
