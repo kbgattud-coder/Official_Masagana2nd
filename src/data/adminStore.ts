@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Announcement, GalleryItem, Album, BlogPost, AdminUser } from '../types';
 import { WARD_ANNOUNCEMENTS, GALLERY_ITEMS, BLOG_POSTS } from './wardData';
 import { idbService, STORES } from '../services/indexedDbService';
+import { normalizeImageUrl } from '../utils/imageUtils';
 
 const STORAGE_KEYS = {
   ANNOUNCEMENTS: 'masagana_admin_announcements_v1',
@@ -99,15 +100,28 @@ const LEGACY_ARTICLE_CATEGORIES: Record<string, BlogPost['category']> = {
 function migrateArticleCategories(items: BlogPost[]): BlogPost[] {
   return items.map((a) => {
     const mapped = LEGACY_ARTICLE_CATEGORIES[a.category as string];
-    return mapped ? { ...a, category: mapped } : a;
+    const migrated = mapped ? { ...a, category: mapped } : { ...a };
+    // Repair pasted Drive share links so they render as images
+    migrated.imageUrl = normalizeImageUrl(migrated.imageUrl);
+    if (migrated.author) {
+      migrated.author = { ...migrated.author, avatarUrl: normalizeImageUrl(migrated.author.avatarUrl) };
+    }
+    if (Array.isArray(migrated.galleryImages)) {
+      migrated.galleryImages = migrated.galleryImages.map(normalizeImageUrl);
+    }
+    return migrated;
   });
+}
+
+function migrateAlbums(items: Album[]): Album[] {
+  return items.map((alb) => ({ ...alb, coverImageUrl: normalizeImageUrl(alb.coverImageUrl) }));
 }
 
 // In-Memory Active Cache for synchronous render performance
 const _memoryCache = {
   announcements: getLocalItem<Announcement[]>(STORAGE_KEYS.ANNOUNCEMENTS, WARD_ANNOUNCEMENTS),
   gallery: getLocalItem<GalleryItem[]>(STORAGE_KEYS.GALLERY, GALLERY_ITEMS),
-  albums: getLocalItem<Album[]>(STORAGE_KEYS.ALBUMS, INITIAL_ALBUMS),
+  albums: migrateAlbums(getLocalItem<Album[]>(STORAGE_KEYS.ALBUMS, INITIAL_ALBUMS)),
   articles: migrateArticleCategories(getLocalItem<BlogPost[]>(STORAGE_KEYS.ARTICLES, BLOG_POSTS)),
   auth: getLocalItem<AdminUser | null>(STORAGE_KEYS.AUTH, null),
   isIdbLoaded: false,
@@ -142,7 +156,7 @@ async function initIndexedDbSync() {
     }
 
     if (idbAlb && idbAlb.length > 0) {
-      _memoryCache.albums = idbAlb;
+      _memoryCache.albums = migrateAlbums(idbAlb);
       hasUpdates = true;
     } else {
       idbService.setAll(STORES.ALBUMS, _memoryCache.albums);
@@ -267,9 +281,9 @@ async function loadFromServer(): Promise<void> {
       changed = true;
     }
     if (Array.isArray(data.albums)) {
-      _memoryCache.albums = data.albums;
-      idbService.setAll(STORES.ALBUMS, data.albums);
-      setLocalItemSafe(STORAGE_KEYS.ALBUMS, data.albums);
+      _memoryCache.albums = migrateAlbums(data.albums);
+      idbService.setAll(STORES.ALBUMS, _memoryCache.albums);
+      setLocalItemSafe(STORAGE_KEYS.ALBUMS, _memoryCache.albums);
       changed = true;
     }
     if (Array.isArray(data.articles)) {

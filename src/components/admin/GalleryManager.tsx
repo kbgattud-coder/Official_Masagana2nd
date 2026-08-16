@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { normalizeImageUrl } from '../../utils/imageUtils';
 import { 
   Plus, 
   FolderPlus, 
@@ -294,7 +295,7 @@ export const GalleryManager: React.FC<GalleryManagerProps> = ({
       category: albumCategory,
       description: albumDescription.trim() || 'Ward activity album and photo collection.',
       location: albumLocation.trim() || 'Masagana Chapel',
-      coverImageUrl: albumCoverUrl.trim(),
+      coverImageUrl: normalizeImageUrl(albumCoverUrl),
       date: albumDate.trim() || 'August 2026',
       driveFolderId: extractedFolderId,
       driveFolderUrl: formattedFolderUrl,

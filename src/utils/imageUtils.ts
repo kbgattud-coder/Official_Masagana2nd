@@ -108,3 +108,27 @@ export function getLocalStorageUsage(): {
   };
 }
 
+
+/**
+ * Convert a pasted Google Drive share link into a direct image URL that
+ * renders inside <img> tags. Drive share links (file/d/ID/view, open?id=ID)
+ * point at an HTML viewer page, not the image bytes, so they appear broken
+ * when used as thumbnails or covers. Non-Drive URLs pass through unchanged.
+ * Works for files shared as "anyone with the link".
+ */
+export function normalizeImageUrl(url: string): string {
+  const trimmed = (url || '').trim();
+  if (!trimmed || !/(^https?:)?\/\/(drive|docs)\.google\.com\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const fileMatch =
+    trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/) ||
+    trimmed.match(/\/d\/([a-zA-Z0-9_-]{10,})/) ||
+    trimmed.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+
+  if (fileMatch && fileMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${fileMatch[1]}`;
+  }
+  return trimmed;
+}

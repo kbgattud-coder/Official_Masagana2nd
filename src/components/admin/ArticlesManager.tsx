@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { BlogPost } from '../../types';
 import { RichTextEditor } from './RichTextEditor';
+import { normalizeImageUrl } from '../../utils/imageUtils';
 import { AuthorAvatar } from '../BlogSection';
 
 interface ArticlesManagerProps {
@@ -155,7 +156,7 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
 
   const addGalleryUrl = () => {
     if (newGalleryImg.trim()) {
-      setGalleryImages(prev => [...prev, newGalleryImg.trim()]);
+      setGalleryImages(prev => [...prev, normalizeImageUrl(newGalleryImg)]);
       setNewGalleryImg('');
     }
   };
@@ -183,11 +184,11 @@ export const ArticlesManager: React.FC<ArticlesManagerProps> = ({
       author: {
         name: authorName.trim() || 'Ward Leader',
         role: authorRole.trim() || 'Masagana 2nd Ward',
-        avatarUrl: authorAvatar.trim(),
+        avatarUrl: normalizeImageUrl(authorAvatar),
       },
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       readingTime: readingTime.trim() || '4 min read',
-      imageUrl: thumbnailUrl.trim() || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop',
+      imageUrl: normalizeImageUrl(thumbnailUrl) || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=1200&auto=format&fit=crop',
       content: paragraphs.length > 0 ? paragraphs : [richHtml],
       richHtml: richHtml.trim(),
       galleryImages: galleryImages.length > 0 ? galleryImages : undefined,
