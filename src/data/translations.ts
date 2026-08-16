@@ -43,6 +43,7 @@ export interface Translations {
     subtitle: string;
     openManualBtn: string;
     manualUrl: string;
+    lessonUrl: string;
     focusBadge: string;
     scripturesLabel: string;
     familyDiscussionTitle: string;
@@ -184,6 +185,7 @@ export const translations: Record<Language, Translations> = {
       subtitle: 'Home-centered, Church-supported gospel study for individuals and families in Masagana 2nd Ward.',
       openManualBtn: 'Open Old Testament 2026 Manual',
       manualUrl: 'https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026?lang=eng',
+      lessonUrl: 'https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026/34?lang=eng',
       focusBadge: 'Old Testament 2026 • Come, Follow Me',
       scripturesLabel: 'Scriptures',
       familyDiscussionTitle: 'Family Discussion & Reflection in Masagana',
@@ -200,12 +202,12 @@ export const translations: Record<Language, Translations> = {
       scripturesCardTitle: 'Standard Works & Study Aids',
       scripturesCardDesc: 'Read the Holy Bible, Book of Mormon, Doctrine and Covenants, and Pearl of Great Price with footnotes and topical guides.',
       scripturesCardLinkText: 'Explore Scriptures',
-      week: 'August 10–16, 2026',
-      dateRange: 'Old Testament 2026 (Job)',
-      lessonTitle: '“I Know That My Redeemer Liveth”',
-      scriptures: 'Job 1–3; 12–14; 19; 21–24; 38–40; 42',
-      readingSnippet: '“For I know that my redeemer liveth, and that he shall stand at the latter day upon the earth: And though after my skin worms destroy this body, yet in my flesh shall I see God.” (Job 19:25–26)',
-      familyPrompt: 'How can we maintain our faith in Jesus Christ and trust in Him during times of severe trial, just as Job did? Discuss as a family how having a testimony of our living Savior brings enduring peace and eternal hope.'
+      week: 'August 17–23, 2026',
+      dateRange: 'Old Testament 2026 (Psalms)',
+      lessonTitle: '“The Lord Is My Shepherd”',
+      scriptures: 'Psalms 1–2; 8; 19–33; 40; 46',
+      readingSnippet: '“The Lord is my shepherd; I shall not want. He maketh me to lie down in green pastures: he leadeth me beside the still waters. He restoreth my soul.” (Psalm 23:1–3)',
+      familyPrompt: 'When have we felt the Savior watching over our family the way a shepherd watches over his sheep? Discuss as a family what it means to follow Him with trust, and how the peace described in Psalm 23 can fill our home this week.'
     },
     gallery: {
       badge: 'Fellowship & Moments',
@@ -323,6 +325,7 @@ export const translations: Record<Language, Translations> = {
       subtitle: 'Nakasentro sa tahanan at sinusuportahan ng Simbahan na pag-aaral ng ebanghelyo para sa mga indibiduwal at pamilya sa Masagana 2nd Ward.',
       openManualBtn: 'Buksan ang Lumang Tipan 2026 Manual',
       manualUrl: 'https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026?lang=tgl',
+      lessonUrl: 'https://www.churchofjesuschrist.org/study/manual/come-follow-me-for-home-and-church-old-testament-2026/34?lang=tgl',
       focusBadge: 'Lumang Tipan 2026 • Pumarito Ka, Sumunod Ka sa Akin',
       scripturesLabel: 'Mga Banal na Kasulatan',
       familyDiscussionTitle: 'Talakayan at Pagninilay ng Pamilya sa Masagana',
@@ -339,12 +342,12 @@ export const translations: Record<Language, Translations> = {
       scripturesCardTitle: 'Mga Karaniwang Tuntunin at Gabay sa Pag-aaral',
       scripturesCardDesc: 'Basahin ang Banal na Biblia, Aklat ni Mormon, Doktrina at mga Tipan, at Mahalagang Hiyas na may mga talababa at gabay sa paksa.',
       scripturesCardLinkText: 'Tuklasin ang mga Kasulatan',
-      week: 'Agosto 10–16, 2026',
-      dateRange: 'Lumang Tipan 2026 (Job)',
-      lessonTitle: '“Nalalaman Ko na ang Aking Manunubos ay Nabubuhay”',
-      scriptures: 'Job 1–3; 12–14; 19; 21–24; 38–40; 42',
-      readingSnippet: '“Sapagkat nalalaman ko na ang aking Manunubos ay nabubuhay, at sa kahulihan ay tatayo siya sa ibabaw ng lupa: At pagkatapos na mawasak ang aking balat, gayon ma’y makikita ko ang Dios sa aking laman.” (Job 19:25–26)',
-      familyPrompt: 'Paano natin mapapanatili ang ating pananampalataya kay Jesucristo at magtiwala sa Kanya sa panahon ng matitinding pagsubok, tulad ng ginawa ni Job? Pag-usapan bilang pamilya kung paano nagdudulot ng kapayapaan at pag-asa ang patotoo na ang ating Tagapagligtas ay buhay.'
+      week: 'Agosto 17–23, 2026',
+      dateRange: 'Lumang Tipan 2026 (Mga Awit)',
+      lessonTitle: '“Ang Panginoon ay Aking Pastol”',
+      scriptures: 'Mga Awit 1–2; 8; 19–33; 40; 46',
+      readingSnippet: '“Ang Panginoon ay aking pastor; hindi ako mangangailangan. Kaniyang pinahihiga ako sa sariwang pastulan: pinapatnubayan niya ako sa siping ng mga tubig na pahingahan. Kaniyang pinapananauli ang aking kaluluwa.” (Mga Awit 23:1–3)',
+      familyPrompt: 'Kailan natin naramdaman na binabantayan ng Tagapagligtas ang ating pamilya tulad ng isang pastol sa kanyang mga tupa? Pag-usapan bilang pamilya kung ano ang kahulugan ng pagsunod sa Kanya nang may pagtitiwala, at kung paano mapupuno ng kapayapaan ng Mga Awit 23 ang ating tahanan ngayong linggo.'
     },
     gallery: {
       badge: 'Samahan at mga Alaala',

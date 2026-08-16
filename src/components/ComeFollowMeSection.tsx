@@ -111,7 +111,7 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
             </div>
 
             <a
-              href={cfm.manualUrl}
+              href={cfm.lessonUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FAF4E8] hover:bg-[#F2E8D5] text-[#554228] text-xs font-bold transition-colors border border-[#E0D4BE] cursor-pointer"
