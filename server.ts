@@ -4,6 +4,7 @@ import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import { handleLogin } from './api/_lib/auth.js';
 import { fetchFolderPhotos } from './api/_lib/drive.js';
+import { handleDataGet, handleDataPut } from './api/_lib/data.js';
 
 dotenv.config();
 
@@ -21,6 +22,19 @@ app.get('/api/health', (req, res) => {
 // Logic lives in api/_lib/auth.ts, shared with the Vercel function.
 app.post('/api/auth/login', (req, res) => {
   const result = handleLogin(req.body);
+  res.status(result.status).json(result.body);
+});
+
+// Shared content store — public read, token-authenticated write.
+// Logic lives in api/_lib/data.ts, shared with the Vercel function.
+app.get('/api/data', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const result = await handleDataGet();
+  res.status(result.status).json(result.body);
+});
+
+app.put('/api/data', async (req, res) => {
+  const result = await handleDataPut(req.headers['authorization'], req.body);
   res.status(result.status).json(result.body);
 });
 

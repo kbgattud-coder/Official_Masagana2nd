@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   ALBUMS: 'masagana_admin_albums_v1',
   ARTICLES: 'masagana_admin_articles_v1',
   AUTH: 'masagana_admin_auth_user_v1',
+  TOKEN: 'masagana_admin_token_v1',
 };
 
 const INITIAL_ALBUMS: Album[] = [
@@ -202,6 +203,94 @@ function setLocalItemSafe<T>(key: string, value: T): void {
   window.dispatchEvent(new Event('masagana_data_updated'));
 }
 
+// ---------------------------------------------------------------------------
+// Server sync — the shared content store (/api/data).
+// The site loads shared content for every visitor on boot; admin mutations
+// publish the affected collection so edits are global, not per-browser.
+// ---------------------------------------------------------------------------
+
+type SyncCollection = 'announcements' | 'gallery' | 'albums' | 'articles';
+
+function getAuthToken(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.TOKEN);
+  } catch {
+    return null;
+  }
+}
+
+function pushToServer(collection: SyncCollection, items: unknown[]): void {
+  const token = getAuthToken();
+  if (!token) return;
+  fetch('/api/data', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ collection, items }),
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        console.warn(`Publishing ${collection} to the shared store failed:`, data?.error || res.status);
+        window.dispatchEvent(new CustomEvent('masagana_sync_error', {
+          detail: { collection, error: data?.error || `HTTP ${res.status}` },
+        }));
+      }
+    })
+    .catch((err) => {
+      console.warn(`Publishing ${collection} to the shared store failed:`, err);
+      window.dispatchEvent(new CustomEvent('masagana_sync_error', {
+        detail: { collection, error: 'Network error' },
+      }));
+    });
+}
+
+async function loadFromServer(): Promise<void> {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) return;
+    const data = await res.json();
+    let changed = false;
+
+    if (Array.isArray(data.announcements)) {
+      _memoryCache.announcements = data.announcements;
+      idbService.setAll(STORES.ANNOUNCEMENTS, data.announcements);
+      setLocalItemSafe(STORAGE_KEYS.ANNOUNCEMENTS, data.announcements);
+      changed = true;
+    }
+    if (Array.isArray(data.gallery)) {
+      _memoryCache.gallery = data.gallery;
+      idbService.setAll(STORES.GALLERY, data.gallery);
+      setLocalItemSafe(STORAGE_KEYS.GALLERY, data.gallery);
+      changed = true;
+    }
+    if (Array.isArray(data.albums)) {
+      _memoryCache.albums = data.albums;
+      idbService.setAll(STORES.ALBUMS, data.albums);
+      setLocalItemSafe(STORAGE_KEYS.ALBUMS, data.albums);
+      changed = true;
+    }
+    if (Array.isArray(data.articles)) {
+      _memoryCache.articles = migrateArticleCategories(data.articles);
+      idbService.setAll(STORES.ARTICLES, _memoryCache.articles);
+      setLocalItemSafe(STORAGE_KEYS.ARTICLES, _memoryCache.articles);
+      changed = true;
+    }
+
+    if (changed) {
+      window.dispatchEvent(new Event('masagana_data_updated'));
+    }
+  } catch {
+    // Offline or server unavailable — the local cache keeps the site working.
+  }
+}
+
+if (typeof window !== 'undefined') {
+  loadFromServer();
+}
+
 // Auth methods
 async function requestLogin(payload: {
   type: 'admin' | 'superadmin';
@@ -219,6 +308,11 @@ async function requestLogin(payload: {
       const user: AdminUser = data.user;
       _memoryCache.auth = user;
       setLocalItemSafe(STORAGE_KEYS.AUTH, user);
+      if (typeof data.token === 'string') {
+        try {
+          localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+        } catch {}
+      }
       return { success: true, user };
     }
     return { success: false, error: data?.error || 'Login failed. Please try again.' };
@@ -244,6 +338,7 @@ export const AdminAuth = {
     _memoryCache.auth = null;
     try {
       localStorage.removeItem(STORAGE_KEYS.AUTH);
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
       window.dispatchEvent(new Event('masagana_data_updated'));
     } catch {
       // Ignored
@@ -271,6 +366,7 @@ export const AdminStore = {
     _memoryCache.announcements = updated;
     idbService.setAll(STORES.ANNOUNCEMENTS, updated);
     setLocalItemSafe(STORAGE_KEYS.ANNOUNCEMENTS, updated);
+    pushToServer('announcements', updated);
   },
 
   deleteAnnouncement(id: string): void {
@@ -278,6 +374,7 @@ export const AdminStore = {
     _memoryCache.announcements = items;
     idbService.deleteItem(STORES.ANNOUNCEMENTS, id);
     setLocalItemSafe(STORAGE_KEYS.ANNOUNCEMENTS, items);
+    pushToServer('announcements', items);
   },
 
   togglePinAnnouncement(id: string): void {
@@ -290,6 +387,7 @@ export const AdminStore = {
     _memoryCache.announcements = items;
     idbService.setAll(STORES.ANNOUNCEMENTS, items);
     setLocalItemSafe(STORAGE_KEYS.ANNOUNCEMENTS, items);
+    pushToServer('announcements', items);
   },
 
   // Albums
@@ -310,6 +408,7 @@ export const AdminStore = {
     _memoryCache.albums = updated;
     idbService.setAll(STORES.ALBUMS, updated);
     setLocalItemSafe(STORAGE_KEYS.ALBUMS, updated);
+    pushToServer('albums', updated);
   },
 
   deleteAlbum(id: string): void {
@@ -317,6 +416,7 @@ export const AdminStore = {
     _memoryCache.albums = items;
     idbService.deleteItem(STORES.ALBUMS, id);
     setLocalItemSafe(STORAGE_KEYS.ALBUMS, items);
+    pushToServer('albums', items);
   },
 
   // Gallery Items (High capacity with IndexedDB backend)
@@ -339,6 +439,7 @@ export const AdminStore = {
     // Save to IndexedDB (virtually unlimited quota)
     idbService.setAll(STORES.GALLERY, updated);
     setLocalItemSafe(STORAGE_KEYS.GALLERY, updated);
+    pushToServer('gallery', updated);
 
     // Update album item count if linked
     if (item.albumId) {
@@ -351,6 +452,7 @@ export const AdminStore = {
       _memoryCache.albums = albums;
       idbService.setAll(STORES.ALBUMS, albums);
       setLocalItemSafe(STORAGE_KEYS.ALBUMS, albums);
+      pushToServer('albums', albums);
     }
   },
 
@@ -367,6 +469,7 @@ export const AdminStore = {
     // Save to IndexedDB immediately
     idbService.setAll(STORES.GALLERY, updated);
     setLocalItemSafe(STORAGE_KEYS.GALLERY, updated);
+    pushToServer('gallery', updated);
 
     // Update album counts
     const albumCounts: Record<string, number> = {};
@@ -386,6 +489,7 @@ export const AdminStore = {
       _memoryCache.albums = albums;
       idbService.setAll(STORES.ALBUMS, albums);
       setLocalItemSafe(STORAGE_KEYS.ALBUMS, albums);
+      pushToServer('albums', albums);
     }
   },
 
@@ -394,6 +498,7 @@ export const AdminStore = {
     _memoryCache.gallery = items;
     idbService.deleteItem(STORES.GALLERY, id);
     setLocalItemSafe(STORAGE_KEYS.GALLERY, items);
+    pushToServer('gallery', items);
   },
 
   // Articles / Blog Posts
@@ -414,6 +519,7 @@ export const AdminStore = {
     _memoryCache.articles = updated;
     idbService.setAll(STORES.ARTICLES, updated);
     setLocalItemSafe(STORAGE_KEYS.ARTICLES, updated);
+    pushToServer('articles', updated);
   },
 
   deleteArticle(id: string): void {
@@ -421,6 +527,7 @@ export const AdminStore = {
     _memoryCache.articles = items;
     idbService.deleteItem(STORES.ARTICLES, id);
     setLocalItemSafe(STORAGE_KEYS.ARTICLES, items);
+    pushToServer('articles', items);
   },
 
   toggleFeaturedArticle(id: string): void {
@@ -433,6 +540,7 @@ export const AdminStore = {
     _memoryCache.articles = items;
     idbService.setAll(STORES.ARTICLES, items);
     setLocalItemSafe(STORAGE_KEYS.ARTICLES, items);
+    pushToServer('articles', items);
   },
 
   // Manual Quota Cleanup & Cache Optimization
@@ -467,6 +575,11 @@ export const AdminStore = {
     setLocalItemSafe(STORAGE_KEYS.GALLERY, GALLERY_ITEMS);
     setLocalItemSafe(STORAGE_KEYS.ALBUMS, INITIAL_ALBUMS);
     setLocalItemSafe(STORAGE_KEYS.ARTICLES, BLOG_POSTS);
+
+    pushToServer('announcements', WARD_ANNOUNCEMENTS);
+    pushToServer('gallery', GALLERY_ITEMS);
+    pushToServer('albums', INITIAL_ALBUMS);
+    pushToServer('articles', BLOG_POSTS);
   }
 };
 
