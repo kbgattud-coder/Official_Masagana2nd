@@ -186,47 +186,37 @@ function setLocalItemSafe<T>(key: string, value: T): void {
 }
 
 // Auth methods
-export const AdminAuth = {
-  loginAdmin(email: string, pass: string): { success: boolean; user?: AdminUser; error?: string } {
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPass = pass.trim();
-
-    if (cleanEmail === 'ashmaiejacob@gmail.com' && cleanPass === 'Masagana@2nd') {
-      const user: AdminUser = {
-        email: 'ashmaiejacob@gmail.com',
-        name: 'Ashmaie Jacob',
-        role: 'admin',
-        lastLogin: new Date().toISOString(),
-      };
+async function requestLogin(payload: {
+  type: 'admin' | 'superadmin';
+  email?: string;
+  password: string;
+}): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => null);
+    if (res.ok && data?.success && data.user) {
+      const user: AdminUser = data.user;
       _memoryCache.auth = user;
       setLocalItemSafe(STORAGE_KEYS.AUTH, user);
       return { success: true, user };
     }
+    return { success: false, error: data?.error || 'Login failed. Please try again.' };
+  } catch {
+    return { success: false, error: 'Could not reach the login server. Please try again.' };
+  }
+}
 
-    return { 
-      success: false, 
-      error: 'Invalid email or password. Please check your credentials.' 
-    };
+export const AdminAuth = {
+  loginAdmin(email: string, pass: string): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+    return requestLogin({ type: 'admin', email: email.trim(), password: pass.trim() });
   },
 
-  loginSuperAdmin(pass: string): { success: boolean; user?: AdminUser; error?: string } {
-    const cleanPass = pass.trim();
-    if (cleanPass === '@Bubby1994') {
-      const user: AdminUser = {
-        email: 'superadmin@masagana2nd.org',
-        name: 'Super Administrator',
-        role: 'superadmin',
-        lastLogin: new Date().toISOString(),
-      };
-      _memoryCache.auth = user;
-      setLocalItemSafe(STORAGE_KEYS.AUTH, user);
-      return { success: true, user };
-    }
-
-    return { 
-      success: false, 
-      error: 'Invalid Superadmin password.' 
-    };
+  loginSuperAdmin(pass: string): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
+    return requestLogin({ type: 'superadmin', password: pass.trim() });
   },
 
   getCurrentUser(): AdminUser | null {

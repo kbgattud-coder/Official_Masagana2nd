@@ -6,8 +6,7 @@ import {
   ShieldCheck, 
   ArrowLeft, 
   Eye, 
-  EyeOff, 
-  Sparkles,
+  EyeOff,
   AlertCircle,
   CheckCircle2
 } from 'lucide-react';
@@ -37,47 +36,32 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAdminSubmit = (e: React.FormEvent) => {
+  const handleAdminSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = AdminAuth.loginAdmin(adminEmail, adminPassword);
-      if (res.success && res.user) {
-        onLoginSuccess(res.user);
-      } else {
-        setError(res.error || 'Invalid credentials');
-      }
-      setIsLoading(false);
-    }, 400);
+    const res = await AdminAuth.loginAdmin(adminEmail, adminPassword);
+    if (res.success && res.user) {
+      onLoginSuccess(res.user);
+    } else {
+      setError(res.error || 'Invalid credentials');
+    }
+    setIsLoading(false);
   };
 
-  const handleSuperadminSubmit = (e: React.FormEvent) => {
+  const handleSuperadminSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = AdminAuth.loginSuperAdmin(superPassword);
-      if (res.success && res.user) {
-        onLoginSuccess(res.user);
-      } else {
-        setError(res.error || 'Invalid Superadmin password');
-      }
-      setIsLoading(false);
-    }, 400);
-  };
-
-  const fillAdminCredentials = () => {
-    setAdminEmail('ashmaiejacob@gmail.com');
-    setAdminPassword('Masagana@2nd');
-    setError(null);
-  };
-
-  const fillSuperAdminCredentials = () => {
-    setSuperPassword('@Bubby1994');
-    setError(null);
+    const res = await AdminAuth.loginSuperAdmin(superPassword);
+    if (res.success && res.user) {
+      onLoginSuccess(res.user);
+    } else {
+      setError(res.error || 'Invalid Superadmin password');
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -159,7 +143,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                   required
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
-                  placeholder="ashmaiejacob@gmail.com"
+                  placeholder="Enter admin email"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#D9D2C4] text-[#1E232A] text-sm placeholder-[#8C97A4] focus:outline-hidden focus:border-[#554228] focus:ring-1 focus:ring-[#554228] transition-colors"
                 />
               </div>
@@ -204,17 +188,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
               )}
             </button>
 
-            {/* Quick Demo Helper */}
-            <div className="pt-2 text-center">
-              <button
-                type="button"
-                onClick={fillAdminCredentials}
-                className="text-[11px] text-[#6C7785] hover:text-[#554228] transition-colors inline-flex items-center gap-1 cursor-pointer"
-              >
-                <Sparkles className="w-3 h-3 text-[#8C6D40]" />
-                <span>Auto-fill Admin credentials (ashmaiejacob@gmail.com)</span>
-              </button>
-            </div>
           </form>
         )}
 
@@ -268,17 +241,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
               )}
             </button>
 
-            {/* Quick Demo Helper */}
-            <div className="pt-2 text-center">
-              <button
-                type="button"
-                onClick={fillSuperAdminCredentials}
-                className="text-[11px] text-[#6C7785] hover:text-[#554228] transition-colors inline-flex items-center gap-1 cursor-pointer"
-              >
-                <Sparkles className="w-3 h-3 text-[#8C6D40]" />
-                <span>Auto-fill Superadmin passkey (@Bubby1994)</span>
-              </button>
-            </div>
           </form>
         )}
 

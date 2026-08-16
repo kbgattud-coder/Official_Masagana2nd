@@ -16,6 +16,64 @@ app.get('/api/health', (req, res) => {
 });
 
 /**
+ * Admin login — credentials are supplied via environment variables
+ * (ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, SUPERADMIN_PASSWORD) so they
+ * never ship in the client bundle or the repository.
+ */
+app.post('/api/auth/login', (req, res) => {
+  const { type, email, password } = req.body || {};
+
+  if (typeof password !== 'string' || !password.trim()) {
+    return res.status(400).json({ success: false, error: 'Password is required.' });
+  }
+
+  if (type === 'admin') {
+    const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const adminPassword = process.env.ADMIN_PASSWORD || '';
+    if (!adminEmail || !adminPassword) {
+      return res.status(500).json({ success: false, error: 'Admin login is not configured on the server.' });
+    }
+    if (
+      typeof email === 'string' &&
+      email.trim().toLowerCase() === adminEmail &&
+      password.trim() === adminPassword
+    ) {
+      return res.json({
+        success: true,
+        user: {
+          email: adminEmail,
+          name: process.env.ADMIN_NAME || 'Ward Admin',
+          role: 'admin',
+          lastLogin: new Date().toISOString(),
+        },
+      });
+    }
+    return res.status(401).json({ success: false, error: 'Invalid email or password. Please check your credentials.' });
+  }
+
+  if (type === 'superadmin') {
+    const superPassword = process.env.SUPERADMIN_PASSWORD || '';
+    if (!superPassword) {
+      return res.status(500).json({ success: false, error: 'Superadmin login is not configured on the server.' });
+    }
+    if (password.trim() === superPassword) {
+      return res.json({
+        success: true,
+        user: {
+          email: process.env.SUPERADMIN_EMAIL || 'superadmin@masagana2nd.org',
+          name: 'Super Administrator',
+          role: 'superadmin',
+          lastLogin: new Date().toISOString(),
+        },
+      });
+    }
+    return res.status(401).json({ success: false, error: 'Invalid Superadmin password.' });
+  }
+
+  return res.status(400).json({ success: false, error: 'Invalid login type.' });
+});
+
+/**
  * Helper to extract Google Drive Folder ID from link or raw ID
  */
 function parseFolderId(input: string): string | null {
