@@ -3,7 +3,10 @@
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -14,6 +17,12 @@
           "value": "noindex, nofollow, noarchive, nosnippet, noimageindex"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cfm-lesson",
+      "schedule": "0 16 * * 0"
     }
   ]
 }

@@ -66,6 +66,7 @@ export interface Translations {
     scriptures: string;
     readingSnippet: string;
     familyPrompt: string;
+    familyPromptGeneric: string;
   };
   gallery: {
     badge: string;
@@ -207,7 +208,8 @@ export const translations: Record<Language, Translations> = {
       lessonTitle: '“The Lord Is My Shepherd”',
       scriptures: 'Psalms 1–2; 8; 19–33; 40; 46',
       readingSnippet: '“The Lord is my shepherd; I shall not want. He maketh me to lie down in green pastures: he leadeth me beside the still waters. He restoreth my soul.” (Psalm 23:1–3)',
-      familyPrompt: 'When have we felt the Savior watching over our family the way a shepherd watches over his sheep? Discuss as a family what it means to follow Him with trust, and how the peace described in Psalm 23 can fill our home this week.'
+      familyPrompt: 'When have we felt the Savior watching over our family the way a shepherd watches over his sheep? Discuss as a family what it means to follow Him with trust, and how the peace described in Psalm 23 can fill our home this week.',
+      familyPromptGeneric: 'Read this week\'s chapters together as a family and share what stands out to each of you. Discuss how these passages point us to the Savior and what you feel invited to do this week.'
     },
     gallery: {
       badge: 'Fellowship & Moments',
@@ -347,7 +349,8 @@ export const translations: Record<Language, Translations> = {
       lessonTitle: '“Ang Panginoon ay Aking Pastol”',
       scriptures: 'Mga Awit 1–2; 8; 19–33; 40; 46',
       readingSnippet: '“Ang Panginoon ay aking pastor; hindi ako mangangailangan. Kaniyang pinahihiga ako sa sariwang pastulan: pinapatnubayan niya ako sa siping ng mga tubig na pahingahan. Kaniyang pinapananauli ang aking kaluluwa.” (Mga Awit 23:1–3)',
-      familyPrompt: 'Kailan natin naramdaman na binabantayan ng Tagapagligtas ang ating pamilya tulad ng isang pastol sa kanyang mga tupa? Pag-usapan bilang pamilya kung ano ang kahulugan ng pagsunod sa Kanya nang may pagtitiwala, at kung paano mapupuno ng kapayapaan ng Mga Awit 23 ang ating tahanan ngayong linggo.'
+      familyPrompt: 'Kailan natin naramdaman na binabantayan ng Tagapagligtas ang ating pamilya tulad ng isang pastol sa kanyang mga tupa? Pag-usapan bilang pamilya kung ano ang kahulugan ng pagsunod sa Kanya nang may pagtitiwala, at kung paano mapupuno ng kapayapaan ng Mga Awit 23 ang ating tahanan ngayong linggo.',
+      familyPromptGeneric: 'Basahin nang sama-sama bilang pamilya ang mga kabanata ngayong linggo at ibahagi kung ano ang tumatak sa bawat isa. Pag-usapan kung paano tayo itinuturo ng mga talatang ito sa Tagapagligtas at kung ano ang nais ninyong gawin ngayong linggo.'
     },
     gallery: {
       badge: 'Samahan at mga Alaala',

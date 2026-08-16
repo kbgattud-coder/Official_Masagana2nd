@@ -56,6 +56,45 @@ export async function readCollection(name: CollectionName): Promise<unknown[] | 
   }
 }
 
+/** Generic small-value cache read (JSON), outside the content collections. */
+export async function readCacheKey<T>(key: string): Promise<T | null> {
+  const fullKey = KEY_PREFIX + 'cache:' + key;
+  const cfg = upstashConfig();
+  let raw: string | null = null;
+  if (cfg) {
+    const res = await fetch(`${cfg.url}/get/${encodeURIComponent(fullKey)}`, {
+      headers: { Authorization: `Bearer ${cfg.token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    raw = typeof data.result === 'string' ? data.result : null;
+  } else {
+    raw = memoryStore.get(fullKey) ?? null;
+  }
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+/** Generic small-value cache write (JSON) with TTL in seconds. */
+export async function writeCacheKey(key: string, value: unknown, ttlSeconds: number): Promise<void> {
+  const fullKey = KEY_PREFIX + 'cache:' + key;
+  const raw = JSON.stringify(value);
+  const cfg = upstashConfig();
+  if (cfg) {
+    await fetch(`${cfg.url}/set/${encodeURIComponent(fullKey)}?EX=${Math.max(60, Math.floor(ttlSeconds))}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${cfg.token}` },
+      body: raw,
+    }).catch(() => {});
+  } else {
+    memoryStore.set(fullKey, raw);
+  }
+}
+
 export async function writeCollection(name: CollectionName, items: unknown[]): Promise<void> {
   const key = KEY_PREFIX + name;
   const value = JSON.stringify(items);

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { handleLogin } from './api/_lib/auth.js';
 import { fetchFolderPhotos } from './api/_lib/drive.js';
 import { handleDataGet, handleDataPut } from './api/_lib/data.js';
+import { handleCfmLesson } from './api/_lib/cfm.js';
 
 dotenv.config();
 
@@ -35,6 +36,12 @@ app.get('/api/data', async (req, res) => {
 
 app.put('/api/data', async (req, res) => {
   const result = await handleDataPut(req.headers['authorization'], req.body);
+  res.status(result.status).json(result.body);
+});
+
+// Current week's Come, Follow Me lesson (self-updating).
+app.get('/api/cfm-lesson', async (req, res) => {
+  const result = await handleCfmLesson(req.query.lang as string | undefined, req.query.refresh === '1');
   res.status(result.status).json(result.body);
 });
 

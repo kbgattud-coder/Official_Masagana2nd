@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   BookOpen, 
   ExternalLink, 
@@ -16,9 +16,47 @@ interface ComeFollowMeSectionProps {
   lang: Language;
 }
 
+interface LiveLesson {
+  lessonNumber: number;
+  week: string;
+  title: string;
+  scriptures: string;
+  book: string;
+  url: string;
+}
+
 export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }) => {
   const t = translations[lang];
   const cfm = t.cfm;
+  const [liveLesson, setLiveLesson] = useState<LiveLesson | null>(null);
+
+  // Load the current week's lesson from the self-updating endpoint.
+  useEffect(() => {
+    const apiLang = lang === 'tl' ? 'tgl' : 'eng';
+    let cancelled = false;
+    fetch(`/api/cfm-lesson?lang=${apiLang}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data && data.title && data.week && data.scriptures) {
+          setLiveLesson(data);
+        }
+      })
+      .catch(() => {
+        // Endpoint unreachable — keep the built-in lesson.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [lang]);
+
+  // Live data wins; the hardcoded translation strings are the fallback.
+  const week = liveLesson ? `${liveLesson.week}, ${new Date().getFullYear()}` : cfm.week;
+  const lessonTitle = liveLesson?.title || cfm.lessonTitle;
+  const scriptures = liveLesson?.scriptures || cfm.scriptures;
+  const lessonUrl = liveLesson?.url || cfm.lessonUrl;
+  // Show the curated quote and family prompt only while they match the
+  // displayed lesson; once a new week rolls in they hide until updated.
+  const staticLessonIsCurrent = !liveLesson || liveLesson.title === cfm.lessonTitle;
 
   return (
     <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-24">
@@ -65,7 +103,7 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FAF4E8] text-[#554228] text-xs font-bold border border-[#EADFCB]">
                 <Calendar className="w-3.5 h-3.5 text-[#8A714E]" />
-                <span>{cfm.week}</span>
+                <span>{week}</span>
               </div>
 
               <span className="text-xs font-semibold text-[#667280] tracking-wide">
@@ -75,19 +113,21 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
 
             {/* Active Lesson Title */}
             <h3 className="text-2xl sm:text-3xl font-semibold text-[#1C2026] tracking-tight leading-snug mb-2">
-              {cfm.lessonTitle}
+              {lessonTitle}
             </h3>
 
             <div className="text-xs sm:text-sm font-medium text-[#4C5B6C] mb-5">
-              {cfm.scripturesLabel}: <strong className="text-[#1C2026]">{cfm.scriptures}</strong>
+              {cfm.scripturesLabel}: <strong className="text-[#1C2026]">{scriptures}</strong>
             </div>
 
-            {/* Key Snippet Quote */}
-            <div className="bg-[#FAF8F5] border-l-3 border-[#C9B393] p-4 sm:p-5 rounded-r-2xl mb-6">
-              <p className="text-xs sm:text-sm italic text-[#444E5B] leading-relaxed">
-                {cfm.readingSnippet}
-              </p>
-            </div>
+            {/* Key Snippet Quote (curated; shown while it matches the live lesson) */}
+            {staticLessonIsCurrent && (
+              <div className="bg-[#FAF8F5] border-l-3 border-[#C9B393] p-4 sm:p-5 rounded-r-2xl mb-6">
+                <p className="text-xs sm:text-sm italic text-[#444E5B] leading-relaxed">
+                  {cfm.readingSnippet}
+                </p>
+              </div>
+            )}
 
             {/* Family Application Prompt */}
             <div className="flex items-start gap-3 bg-[#F4EFE6] border border-[#E7DECE] rounded-2xl p-4 mb-6">
@@ -97,7 +137,7 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
                   {cfm.familyDiscussionTitle}
                 </span>
                 <p className="text-xs sm:text-sm text-[#3E4957] leading-relaxed">
-                  {cfm.familyPrompt}
+                  {staticLessonIsCurrent ? cfm.familyPrompt : cfm.familyPromptGeneric}
                 </p>
               </div>
             </div>
@@ -111,7 +151,7 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
             </div>
 
             <a
-              href={cfm.lessonUrl}
+              href={lessonUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FAF4E8] hover:bg-[#F2E8D5] text-[#554228] text-xs font-bold transition-colors border border-[#E0D4BE] cursor-pointer"
