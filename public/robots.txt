@@ -1,31 +1,6 @@
-# Block all search engines and web crawlers from indexing this site
-# Protects ward member names, leadership directories, blogs, and media privacy
+# This site must not appear in search results. Crawling is deliberately
+# ALLOWED so that crawlers can see the noindex directives (X-Robots-Tag
+# header and <meta name="robots"> tag). Blocking with "Disallow: /" would
+# hide those directives and let URLs surface in results as bare links.
 User-agent: *
-Disallow: /
-
-User-agent: Googlebot
-Disallow: /
-
-User-agent: Googlebot-Image
-Disallow: /
-
-User-agent: Bingbot
-Disallow: /
-
-User-agent: Slurp
-Disallow: /
-
-User-agent: DuckDuckBot
-Disallow: /
-
-User-agent: Baiduspider
-Disallow: /
-
-User-agent: Yandex
-Disallow: /
-
-User-agent: facebookexternalhit
-Disallow: /
-
-User-agent: Twitterbot
-Disallow: /
+Disallow:
