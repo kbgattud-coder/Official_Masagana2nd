@@ -121,6 +121,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle, l
     <section id="blog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-24">
       {/* Section Header */}
       <div className="flex flex-col mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAE4D9] text-[#554228] text-xs font-semibold uppercase tracking-wider mb-2">
             <BookOpen className="w-3.5 h-3.5" />
@@ -132,6 +133,19 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle, l
           <p className="text-sm sm:text-base text-[#616B77] mt-1">
             {blog.subtitle}
           </p>
+        </div>
+
+        {/* View All CTA (home page trimmed mode) */}
+        {limit && onViewAll && (
+          <button
+            onClick={onViewAll}
+            id="blog-view-all-btn"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer shrink-0 w-fit"
+          >
+            <span>{blog.viewAllBtn}</span>
+            <ChevronRight className="w-4 h-4 text-[#DFC8A4]" />
+          </button>
+        )}
         </div>
 
         {/* Filter Pills */}
@@ -224,20 +238,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle, l
           );
         })}
       </div>
-
-      {/* View All CTA (home page trimmed mode) */}
-      {limit && onViewAll && (
-        <div className="flex justify-center pt-8">
-          <button
-            onClick={onViewAll}
-            id="blog-view-all-btn"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
-          >
-            <span>{blog.viewAllBtn}</span>
-            <ChevronRight className="w-4 h-4 text-[#DFC8A4]" />
-          </button>
-        </div>
-      )}
 
     </section>
   );

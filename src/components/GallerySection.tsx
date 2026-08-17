@@ -45,17 +45,31 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   return (
     <section id="gallery" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 scroll-mt-24">
       {/* Main Section Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAE4D8] text-[#554228] text-xs font-semibold uppercase tracking-wider mb-3">
-          <ImageIcon className="w-3.5 h-3.5" />
-          <span>{gallery.badge}</span>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAE4D8] text-[#554228] text-xs font-semibold uppercase tracking-wider mb-3">
+            <ImageIcon className="w-3.5 h-3.5" />
+            <span>{gallery.badge}</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-[#1C2026] tracking-tight">
+            {gallery.title}
+          </h2>
+          <p className="text-sm sm:text-base text-[#616B77] mt-1.5 max-w-2xl">
+            {gallery.subtitle}
+          </p>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-[#1C2026] tracking-tight">
-          {gallery.title}
-        </h2>
-        <p className="text-sm sm:text-base text-[#616B77] mt-1.5 max-w-2xl">
-          {gallery.subtitle}
-        </p>
+
+        {/* View All CTA (home page trimmed mode) */}
+        {limit && onViewAll && (
+          <button
+            onClick={onViewAll}
+            id="gallery-view-all-btn"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer shrink-0 w-fit"
+          >
+            <span>{gallery.viewAllBtn}</span>
+            <ArrowRight className="w-4 h-4 text-[#DFC8A4]" />
+          </button>
+        )}
       </div>
 
       {/* Category Filter Pills */}
@@ -153,20 +167,6 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
             );
           })}
         </div>
-
-        {/* View All CTA (home page trimmed mode) */}
-        {limit && onViewAll && (
-          <div className="flex justify-center pt-2">
-            <button
-              onClick={onViewAll}
-              id="gallery-view-all-btn"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
-            >
-              <span>{gallery.viewAllBtn}</span>
-              <ArrowRight className="w-4 h-4 text-[#DFC8A4]" />
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );
