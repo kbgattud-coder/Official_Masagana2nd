@@ -61,7 +61,7 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
   return (
     <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-24">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div className="flex flex-col mb-8 gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8E2D5] text-[#554228] text-xs font-semibold uppercase tracking-wider mb-2">
             <BookOpen className="w-3.5 h-3.5" />
@@ -73,20 +73,6 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
           <p className="text-sm sm:text-base text-[#616B77] mt-1">
             {cfm.subtitle}
           </p>
-        </div>
-
-        {/* Primary Link to Official Church Come Follow Me Website based on selected language */}
-        <div>
-          <a
-            href={cfm.manualUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1C2026] hover:bg-[#2C323B] text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
-            id="cfm-official-website-btn"
-          >
-            <span>{cfm.openManualBtn}</span>
-            <ExternalLink className="w-4 h-4 text-[#DFC8A4]" />
-          </a>
         </div>
       </div>
 

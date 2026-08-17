@@ -11,6 +11,9 @@ import { Language, translations } from '../data/translations';
 interface BlogSectionProps {
   lang: Language;
   onOpenArticle: (articleId: string) => void;
+  /** When set, hides the filters and shows only the newest N articles with a View All CTA. */
+  limit?: number;
+  onViewAll?: () => void;
 }
 
 // Helper to get initial letter of first name
@@ -65,7 +68,7 @@ export const AuthorAvatar: React.FC<{
   );
 };
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle }) => {
+export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle, limit, onViewAll }) => {
   const { articles } = useAdminData();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery] = useState<string>('');
@@ -92,15 +95,27 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
   const usedCategories = new Set(publishedArticles.map(a => a.category as string));
   const categories = ['All', ...ALL_CATEGORIES.filter(cat => usedCategories.has(cat))];
 
-  const filteredPosts = publishedArticles.filter((post) => {
-    const matchesCategory = selectedCategory === 'All' || selectedCategory === blog.allCategory || post.category === selectedCategory;
-    const matchesSearch = searchQuery === '' ||
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (post.richHtml && post.richHtml.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      post.content.some(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  const postTime = (p: { date?: string; createdAt?: string }): number => {
+    const fromDate = p.date ? Date.parse(p.date) : NaN;
+    if (!Number.isNaN(fromDate)) return fromDate;
+    const fromCreated = p.createdAt ? Date.parse(p.createdAt) : NaN;
+    return Number.isNaN(fromCreated) ? 0 : fromCreated;
+  };
+
+  const matchingPosts = publishedArticles
+    .filter((post) => {
+      // The trimmed home view always shows the newest posts across categories
+      const matchesCategory = limit || selectedCategory === 'All' || selectedCategory === blog.allCategory || post.category === selectedCategory;
+      const matchesSearch = searchQuery === '' ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (post.richHtml && post.richHtml.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        post.content.some(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => postTime(b) - postTime(a));
+
+  const filteredPosts = limit ? matchingPosts.slice(0, limit) : matchingPosts;
 
   return (
     <section id="blog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-24">
@@ -120,6 +135,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
         </div>
 
         {/* Filter Pills */}
+        {!limit && (
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {categories.map((cat) => (
             <button
@@ -135,6 +151,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
             </button>
           ))}
         </div>
+        )}
       </div>
 
       {/* Talks & Articles Grid */}
@@ -207,6 +224,20 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
           );
         })}
       </div>
+
+      {/* View All CTA (home page trimmed mode) */}
+      {limit && onViewAll && (
+        <div className="flex justify-center pt-8">
+          <button
+            onClick={onViewAll}
+            id="blog-view-all-btn"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
+          >
+            <span>{blog.viewAllBtn}</span>
+            <ChevronRight className="w-4 h-4 text-[#DFC8A4]" />
+          </button>
+        </div>
+      )}
 
     </section>
   );

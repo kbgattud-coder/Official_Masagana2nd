@@ -9,10 +9,12 @@ import { BentoHero } from './components/BentoHero';
 import { BulletinBoard } from './components/BulletinBoard';
 import { ComeFollowMeSection } from './components/ComeFollowMeSection';
 import { GallerySection } from './components/GallerySection';
+import { GalleryPage } from './components/GalleryPage';
 import { AlbumPage } from './components/AlbumPage';
 import { HistorySection } from './components/HistorySection';
 import { BlogSection } from './components/BlogSection';
 import { ArticlePage } from './components/ArticlePage';
+import { ArticlesPage } from './components/ArticlesPage';
 import { Footer } from './components/Footer';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -21,7 +23,10 @@ import { AdminUser } from './types';
 import { Language } from './data/translations';
 
 export default function App() {
-  const [viewMode, setViewMode] = useState<'website' | 'admin-login' | 'admin-dashboard' | 'album-view' | 'article-view'>('website');
+  const [viewMode, setViewMode] = useState<'website' | 'admin-login' | 'admin-dashboard' | 'album-view' | 'article-view' | 'gallery-view' | 'articles-view'>('website');
+  // Remembers whether an album/article was opened from home or its index page,
+  // so Back returns where the visitor actually came from.
+  const [openedFrom, setOpenedFrom] = useState<'home' | 'index'>('home');
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => AdminAuth.getCurrentUser());
@@ -66,6 +71,7 @@ export default function App() {
   };
 
   const handleOpenAlbum = (albumId: string) => {
+    setOpenedFrom(viewMode === 'gallery-view' ? 'index' : 'home');
     setSelectedAlbumId(albumId);
     setViewMode('album-view');
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -73,6 +79,11 @@ export default function App() {
 
   const handleBackToGallery = () => {
     setSelectedAlbumId(null);
+    if (openedFrom === 'index') {
+      setViewMode('gallery-view');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
     setViewMode('website');
     setTimeout(() => {
       const element = document.getElementById('gallery');
@@ -101,6 +112,7 @@ export default function App() {
   };
 
   const handleOpenArticle = (articleId: string) => {
+    setOpenedFrom(viewMode === 'articles-view' ? 'index' : 'home');
     setSelectedArticleId(articleId);
     setViewMode('article-view');
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -108,6 +120,11 @@ export default function App() {
 
   const handleBackToBlog = () => {
     setSelectedArticleId(null);
+    if (openedFrom === 'index') {
+      setViewMode('articles-view');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
     setViewMode('website');
     setTimeout(() => {
       const element = document.getElementById('blog');
@@ -121,6 +138,31 @@ export default function App() {
 
   const handleNavigateFromArticle = (sectionId: string) => {
     setSelectedArticleId(null);
+    setViewMode('website');
+    setActiveTab(sectionId);
+    setTimeout(() => {
+      if (sectionId === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
+  };
+
+  const handleViewAllGallery = () => {
+    setViewMode('gallery-view');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const handleViewAllArticles = () => {
+    setViewMode('articles-view');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const handleBackHomeFromIndex = (sectionId: string) => {
     setViewMode('website');
     setActiveTab(sectionId);
     setTimeout(() => {
@@ -214,7 +256,35 @@ export default function App() {
     );
   }
 
-  // 5. Public Ward Website Home View
+  // 5. Dedicated Gallery Index Page
+  if (viewMode === 'gallery-view') {
+    return (
+      <GalleryPage
+        onBack={() => handleBackHomeFromIndex('gallery')}
+        onOpenAlbum={handleOpenAlbum}
+        lang={lang}
+        setLang={setLang}
+        onOpenAdmin={handleOpenAdmin}
+        onNavigateHomeSection={handleBackHomeFromIndex}
+      />
+    );
+  }
+
+  // 6. Dedicated Articles Index Page
+  if (viewMode === 'articles-view') {
+    return (
+      <ArticlesPage
+        onBack={() => handleBackHomeFromIndex('blog')}
+        onOpenArticle={handleOpenArticle}
+        lang={lang}
+        setLang={setLang}
+        onOpenAdmin={handleOpenAdmin}
+        onNavigateHomeSection={handleBackHomeFromIndex}
+      />
+    );
+  }
+
+  // 7. Public Ward Website Home View
   return (
     <div className="min-h-screen bg-[#EDEBE8] text-[#1E232A] flex flex-col font-sans selection:bg-[#E2D5C3] selection:text-[#1E232A]">
       {/* Top Floating Header with Simplified Navigation, Language Selector & Admin Link */}
@@ -241,13 +311,20 @@ export default function App() {
         <ComeFollowMeSection lang={lang} />
 
         {/* Balanced Bento Community Gallery Section */}
-        <GallerySection 
-          lang={lang} 
+        <GallerySection
+          lang={lang}
           onOpenAlbum={handleOpenAlbum}
+          limit={3}
+          onViewAll={handleViewAllGallery}
         />
 
         {/* Spiritual Blog & Articles Section */}
-        <BlogSection lang={lang} onOpenArticle={handleOpenArticle} />
+        <BlogSection
+          lang={lang}
+          onOpenArticle={handleOpenArticle}
+          limit={3}
+          onViewAll={handleViewAllArticles}
+        />
 
         {/* Ward History Section (1991–Present) */}
         <HistorySection lang={lang} />

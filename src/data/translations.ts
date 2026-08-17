@@ -9,6 +9,7 @@ export interface Translations {
     blog: string;
     history: string;
     language: string;
+    backHome: string;
   };
   hero: {
     stakeBadge: string;
@@ -77,6 +78,7 @@ export interface Translations {
     viewFullBtn: string;
     close: string;
     backToAlbums: string;
+    viewAllBtn: string;
     viewAlbum: string;
     photosCount: string;
     albumsCount: string;
@@ -87,6 +89,7 @@ export interface Translations {
     title: string;
     subtitle: string;
     allCategory: string;
+    viewAllBtn: string;
     readArticle: string;
     readAloud: string;
     stopReading: string;
@@ -152,6 +155,7 @@ export const translations: Record<Language, Translations> = {
       blog: 'Talks & Articles',
       history: 'Our History',
       language: 'Language',
+      backHome: 'Back to Home',
     },
     hero: {
       stakeBadge: 'Antipolo Philippines Stake',
@@ -220,6 +224,7 @@ export const translations: Record<Language, Translations> = {
       viewFullBtn: 'View High-Res Photo',
       close: 'Close',
       backToAlbums: 'Back to Albums',
+      viewAllBtn: 'View All Albums',
       viewAlbum: 'View Album',
       photosCount: 'Photos',
       albumsCount: 'Albums',
@@ -230,6 +235,7 @@ export const translations: Record<Language, Translations> = {
       title: 'Talks & Articles',
       subtitle: 'Inspiring messages, sacrament talks, Relief Society lessons, and member reflections.',
       allCategory: 'All',
+      viewAllBtn: 'View All Articles',
       readArticle: 'Read Full Article',
       readAloud: 'Listen (Audio Narration)',
       stopReading: 'Stop Audio',
@@ -293,6 +299,7 @@ export const translations: Record<Language, Translations> = {
       blog: 'Mga Mensahe at Artikulo',
       history: 'Kasaysayan',
       language: 'Wika',
+      backHome: 'Bumalik sa Home',
     },
     hero: {
       stakeBadge: 'Antipolo Philippines Stake',
@@ -361,6 +368,7 @@ export const translations: Record<Language, Translations> = {
       viewFullBtn: 'Tingnan ang Larawan',
       close: 'Isara',
       backToAlbums: 'Bumalik sa mga Album',
+      viewAllBtn: 'Tingnan Lahat ng Album',
       viewAlbum: 'Tingnan ang Album',
       photosCount: 'Mga Larawan',
       albumsCount: 'Mga Album',
@@ -371,6 +379,7 @@ export const translations: Record<Language, Translations> = {
       title: 'Mga Mensahe at Artikulo',
       subtitle: 'Buwanang mensahe mula sa Bishopric, mga pananaw mula sa Relief Society, at pagninilay ng mga miyembro.',
       allCategory: 'Lahat',
+      viewAllBtn: 'Tingnan Lahat ng Artikulo',
       readArticle: 'Basahin ang Buong Artikulo',
       readAloud: 'Pakinggan (Audio Narration)',
       stopReading: 'Ihinto ang Audio',

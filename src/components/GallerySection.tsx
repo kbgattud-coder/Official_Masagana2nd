@@ -13,11 +13,16 @@ import { Language, translations } from '../data/translations';
 interface GallerySectionProps {
   lang: Language;
   onOpenAlbum: (albumId: string) => void;
+  /** When set, hides the filters and shows only the newest N albums with a View All CTA. */
+  limit?: number;
+  onViewAll?: () => void;
 }
 
-export const GallerySection: React.FC<GallerySectionProps> = ({ 
+export const GallerySection: React.FC<GallerySectionProps> = ({
   lang,
-  onOpenAlbum 
+  onOpenAlbum,
+  limit,
+  onViewAll
 }) => {
   const { albums } = useAdminData();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -32,9 +37,10 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
     const fromCreated = a.createdAt ? Date.parse(a.createdAt) : NaN;
     return Number.isNaN(fromCreated) ? 0 : fromCreated;
   };
-  const filteredAlbums = albums
-    .filter((a) => selectedCategory === 'All' || a.category === selectedCategory)
+  const sortedAlbums = albums
+    .filter((a) => limit ? true : (selectedCategory === 'All' || a.category === selectedCategory))
     .sort((a, b) => albumTime(b) - albumTime(a));
+  const filteredAlbums = limit ? sortedAlbums.slice(0, limit) : sortedAlbums;
 
   return (
     <section id="gallery" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 scroll-mt-24">
@@ -54,6 +60,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
 
       {/* Category Filter Pills */}
       <div className="space-y-6">
+        {!limit && (
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {['All', 'Ward Activities', 'Stake', 'Youth', 'Relief Society', 'Elders Quorum', 'Primary', 'Community'].map((cat) => (
             <button
@@ -69,6 +76,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
             </button>
           ))}
         </div>
+        )}
 
         {/* Albums Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -145,6 +153,20 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
             );
           })}
         </div>
+
+        {/* View All CTA (home page trimmed mode) */}
+        {limit && onViewAll && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={onViewAll}
+              id="gallery-view-all-btn"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C2026] hover:bg-black text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
+            >
+              <span>{gallery.viewAllBtn}</span>
+              <ArrowRight className="w-4 h-4 text-[#DFC8A4]" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
