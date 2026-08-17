@@ -72,8 +72,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
   const t = translations[lang];
   const blog = t.blog;
 
-  const categories = [
-    'All',
+  const ALL_CATEGORIES = [
     'Messages from the Bishopric',
     'Sacrament Talk Spotlight',
     'Missionary Letters',
@@ -88,6 +87,10 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ lang, onOpenArticle })
 
   // Only show published articles to ward members
   const publishedArticles = articles.filter(a => a.status !== 'draft');
+
+  // Only offer filters for categories that actually have published articles
+  const usedCategories = new Set(publishedArticles.map(a => a.category as string));
+  const categories = ['All', ...ALL_CATEGORIES.filter(cat => usedCategories.has(cat))];
 
   const filteredPosts = publishedArticles.filter((post) => {
     const matchesCategory = selectedCategory === 'All' || selectedCategory === blog.allCategory || post.category === selectedCategory;
