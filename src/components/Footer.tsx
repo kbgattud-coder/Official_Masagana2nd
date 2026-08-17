@@ -93,6 +93,15 @@ export const Footer: React.FC<FooterProps> = ({
                 <span className="font-medium">FamilySearch.org ({footer.genealogyLabel})</span>
                 <ExternalLink className="w-4 h-4 text-[#DFC8A4] group-hover:translate-x-0.5 transition-transform" />
               </a>
+              <a
+                href="https://maps.app.goo.gl/1m3MjVQw9f1G8Lnz6"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between p-3 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition-all group"
+              >
+                <span className="font-medium flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-[#DFC8A4]" />Google Maps</span>
+                <ExternalLink className="w-4 h-4 text-[#DFC8A4] group-hover:translate-x-0.5 transition-transform" />
+              </a>
             </div>
           </div>
 

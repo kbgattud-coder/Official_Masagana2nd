@@ -25,10 +25,16 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
   const t = translations[lang];
   const gallery = t.gallery;
 
-  // Filter albums by category
-  const filteredAlbums = albums.filter(
-    (a) => selectedCategory === 'All' || a.category === selectedCategory
-  );
+  // Filter albums by category, newest event first
+  const albumTime = (a: { date?: string; createdAt?: string }): number => {
+    const fromDate = a.date ? Date.parse(a.date) : NaN;
+    if (!Number.isNaN(fromDate)) return fromDate;
+    const fromCreated = a.createdAt ? Date.parse(a.createdAt) : NaN;
+    return Number.isNaN(fromCreated) ? 0 : fromCreated;
+  };
+  const filteredAlbums = albums
+    .filter((a) => selectedCategory === 'All' || a.category === selectedCategory)
+    .sort((a, b) => albumTime(b) - albumTime(a));
 
   return (
     <section id="gallery" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 scroll-mt-24">
@@ -115,7 +121,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
 
                   {/* Album Card Body */}
                   <div className="p-5 sm:p-6 bg-[#FFFFFF]">
-                    <h3 className="text-lg sm:text-xl font-serif font-semibold text-[#1C2026] group-hover:text-[#554228] transition-colors leading-snug line-clamp-2">
+                    <h3 className="text-lg font-semibold text-[#1C2026] group-hover:text-[#554228] transition-colors leading-snug line-clamp-2">
                       {album.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#616B77] mt-2 line-clamp-2 leading-relaxed">

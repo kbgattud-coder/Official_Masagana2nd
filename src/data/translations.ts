@@ -213,7 +213,7 @@ export const translations: Record<Language, Translations> = {
     },
     gallery: {
       badge: 'Fellowship & Moments',
-      title: 'Community Photo Gallery',
+      title: 'Ward Photo Gallery',
       subtitle: 'Capturing moments of worship, youth service, family fellowship, and stake gatherings in Rizal.',
       allCategory: 'All',
       photoLabel: 'Photo',
@@ -354,7 +354,7 @@ export const translations: Record<Language, Translations> = {
     },
     gallery: {
       badge: 'Samahan at mga Alaala',
-      title: 'Galerya ng Komunidad',
+      title: 'Galerya ng Ward',
       subtitle: 'Mga sandali ng pagsamba, paglilingkod ng kabataan, salu-salo ng pamilya, at pagtitipon ng stake sa Rizal.',
       allCategory: 'Lahat',
       photoLabel: 'Larawan',
