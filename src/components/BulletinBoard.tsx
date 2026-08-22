@@ -21,18 +21,7 @@ export const BulletinBoard: React.FC<BulletinBoardProps> = ({ lang }) => {
   const t = translations[lang];
   const bulletin = t.bulletin;
 
-  // Filter announcements
-  const filteredAnnouncements = announcements.filter((item) => {
-    const matchesCategory = selectedCategory === 'All' || selectedCategory === bulletin.allCategory || item.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.location && item.location.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
-
-  const categories = [
-    'All',
+  const ALL_CATEGORIES = [
     'Ward Activities',
     'Stake Activities',
     'Youth (YM/YW)',
@@ -43,6 +32,24 @@ export const BulletinBoard: React.FC<BulletinBoardProps> = ({ lang }) => {
     'Temple & Family History',
     'Missionary'
   ];
+
+  // Only offer filters for categories that currently have announcements
+  const usedCategories = new Set(announcements.map((a) => a.category as string));
+  const categories = ['All', ...ALL_CATEGORIES.filter((cat) => usedCategories.has(cat))];
+
+  // If the selected category's last announcement was removed, fall back to All
+  const activeCategory = categories.includes(selectedCategory) ? selectedCategory : 'All';
+
+  // Filter announcements
+  const filteredAnnouncements = announcements.filter((item) => {
+    const matchesCategory = activeCategory === 'All' || activeCategory === bulletin.allCategory || item.category === activeCategory;
+    const matchesSearch = searchQuery === '' ||
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.location && item.location.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
+
 
   return (
     <section id="bulletin" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-24">
@@ -83,7 +90,7 @@ export const BulletinBoard: React.FC<BulletinBoardProps> = ({ lang }) => {
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                selectedCategory === cat
+                activeCategory === cat
                   ? 'bg-[#1C2026] text-white shadow-xs'
                   : 'bg-[#F2EEE7] text-[#5A6470] hover:bg-[#E7E2D8]'
               }`}
