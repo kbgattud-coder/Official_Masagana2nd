@@ -8,6 +8,7 @@ import {
   Search
 } from 'lucide-react';
 import { useAdminData } from '../data/adminStore';
+import { isAnnouncementActive } from '../utils/announcementDate';
 import { Language, translations } from '../data/translations';
 
 interface BulletinBoardProps {
@@ -20,6 +21,10 @@ export const BulletinBoard: React.FC<BulletinBoardProps> = ({ lang }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const t = translations[lang];
   const bulletin = t.bulletin;
+
+  // Hide announcements whose date has already passed (Manila time).
+  // Undated entries such as "Weekly Calendar" stay up.
+  const activeAnnouncements = announcements.filter((a) => isAnnouncementActive(a.date));
 
   const ALL_CATEGORIES = [
     'Ward Activities',
@@ -34,14 +39,14 @@ export const BulletinBoard: React.FC<BulletinBoardProps> = ({ lang }) => {
   ];
 
   // Only offer filters for categories that currently have announcements
-  const usedCategories = new Set(announcements.map((a) => a.category as string));
+  const usedCategories = new Set(activeAnnouncements.map((a) => a.category as string));
   const categories = ['All', ...ALL_CATEGORIES.filter((cat) => usedCategories.has(cat))];
 
   // If the selected category's last announcement was removed, fall back to All
   const activeCategory = categories.includes(selectedCategory) ? selectedCategory : 'All';
 
   // Filter announcements
-  const filteredAnnouncements = announcements.filter((item) => {
+  const filteredAnnouncements = activeAnnouncements.filter((item) => {
     const matchesCategory = activeCategory === 'All' || activeCategory === bulletin.allCategory || item.category === activeCategory;
     const matchesSearch = searchQuery === '' ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

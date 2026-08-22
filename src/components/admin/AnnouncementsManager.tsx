@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { isAnnouncementActive } from '../../utils/announcementDate';
 import { 
   Plus, 
   Search, 
@@ -188,6 +189,14 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#554228] text-white">
                       <Pin className="w-3 h-3 fill-white" />
                       <span>Pinned to Top</span>
+                    </span>
+                  )}
+                  {!isAnnouncementActive(ann.date) && (
+                    <span
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EFE9E1] text-[#6B7684] border border-[#DED7CC]"
+                      title="The date has passed, so this is no longer shown on the public website"
+                    >
+                      <span>Past &bull; Hidden from site</span>
                     </span>
                   )}
                 </div>
