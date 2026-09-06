@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { normalizeImageUrl } from '../../utils/imageUtils';
 import { isAnnouncementActive } from '../../utils/announcementDate';
 import { 
   Plus, 
@@ -60,6 +61,9 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
   const [isPinned, setIsPinned] = useState(false);
   const [actionText, setActionText] = useState('');
   const [actionUrl, setActionUrl] = useState('');
+  const [posterImageUrl, setPosterImageUrl] = useState('');
+  const [showAsPopup, setShowAsPopup] = useState(false);
+  const [popupDaysBefore, setPopupDaysBefore] = useState(7);
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -75,6 +79,9 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
     setContactEmail('');
     setIsPinned(false);
     setActionText('');
+    setPosterImageUrl('');
+    setShowAsPopup(false);
+    setPopupDaysBefore(7);
     setActionUrl('');
     setIsEditing(true);
   };
@@ -92,6 +99,9 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
     setIsPinned(!!ann.isPinned);
     setActionText(ann.actionText || '');
     setActionUrl(ann.actionUrl || '');
+    setPosterImageUrl(ann.posterImageUrl || '');
+    setShowAsPopup(!!ann.showAsPopup);
+    setPopupDaysBefore(ann.popupDaysBefore ?? 7);
     setIsEditing(true);
   };
 
@@ -112,6 +122,9 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
       isPinned,
       actionText: actionText.trim() || undefined,
       actionUrl: actionUrl.trim() || undefined,
+      posterImageUrl: normalizeImageUrl(posterImageUrl) || undefined,
+      showAsPopup: showAsPopup || undefined,
+      popupDaysBefore: showAsPopup ? popupDaysBefore : undefined,
       createdAt: currentId ? undefined : new Date().toISOString(),
     };
 
@@ -475,6 +488,67 @@ export const AnnouncementsManager: React.FC<AnnouncementsManagerProps> = ({
                     onChange={(e) => setIsPinned(e.target.checked)}
                     className="w-4 h-4 rounded text-[#554228] focus:ring-0 cursor-pointer"
                   />
+                </div>
+
+                {/* Event Poster Popup */}
+                <div className="pt-3 mt-1 border-t border-[#D9D2C4] space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 className="text-xs font-bold text-[#8C6D40]">Event Poster Popup</h4>
+                      <p className="text-[11px] text-[#717E8C] mt-0.5">
+                        Show this event in a pop-up to everyone who visits the website as the date gets closer.
+                      </p>
+                    </div>
+                    <label className="flex items-center gap-2 shrink-0 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={showAsPopup}
+                        onChange={(e) => setShowAsPopup(e.target.checked)}
+                        className="w-4 h-4 rounded text-[#554228] focus:ring-0 cursor-pointer"
+                      />
+                      <span className="text-xs font-semibold text-[#1E232A]">Enable</span>
+                    </label>
+                  </div>
+
+                  {showAsPopup && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#4A5568] mb-1">
+                          Poster Image (paste a Google Drive share link or image URL)
+                        </label>
+                        <input
+                          type="url"
+                          value={posterImageUrl}
+                          onChange={(e) => setPosterImageUrl(normalizeImageUrl(e.target.value))}
+                          placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                          className="w-full px-3.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#D9D2C4] text-[#1E232A] text-xs placeholder-[#8C97A4] focus:outline-hidden focus:border-[#554228] focus:ring-1 focus:ring-[#554228]"
+                        />
+                        {posterImageUrl && (
+                          <div className="mt-2 rounded-xl overflow-hidden border border-[#D9D2C4] bg-[#F3EFE9] max-h-48 flex items-center justify-center">
+                            <img src={posterImageUrl} alt="Poster preview" className="max-h-48 w-auto object-contain" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#4A5568] mb-1">
+                          Start showing this many days before the event
+                        </label>
+                        <select
+                          value={popupDaysBefore}
+                          onChange={(e) => setPopupDaysBefore(Number(e.target.value))}
+                          className="px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#D9D2C4] text-[#1E232A] text-xs focus:outline-hidden focus:border-[#554228] cursor-pointer"
+                        >
+                          {[3, 5, 7, 10, 14, 21, 30].map((d) => (
+                            <option key={d} value={d}>{d} days before</option>
+                          ))}
+                        </select>
+                        <p className="text-[11px] text-[#717E8C] mt-1.5">
+                          The pop-up appears automatically during that window and stops after the event date. Visitors see it once a day and can dismiss it.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#D9D2C4]">

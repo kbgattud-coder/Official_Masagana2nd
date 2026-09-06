@@ -69,6 +69,12 @@ export interface Translations {
     familyPrompt: string;
     familyPromptGeneric: string;
   };
+  popup: {
+    close: string;
+    viewDetails: string;
+    upcoming: string;
+    dontShowAgain: string;
+  };
   gallery: {
     badge: string;
     title: string;
@@ -215,6 +221,12 @@ export const translations: Record<Language, Translations> = {
       familyPrompt: 'When have we felt the Savior watching over our family the way a shepherd watches over his sheep? Discuss as a family what it means to follow Him with trust, and how the peace described in Psalm 23 can fill our home this week.',
       familyPromptGeneric: 'Read this week\'s chapters together as a family and share what stands out to each of you. Discuss how these passages point us to the Savior and what you feel invited to do this week.'
     },
+    popup: {
+      close: 'Close',
+      viewDetails: 'View Details',
+      upcoming: 'Upcoming Ward Activity',
+      dontShowAgain: "Don't show this again",
+    },
     gallery: {
       badge: 'Fellowship & Moments',
       title: 'Ward Photo Gallery',
@@ -358,6 +370,12 @@ export const translations: Record<Language, Translations> = {
       readingSnippet: '“Ang Panginoon ay aking pastor; hindi ako mangangailangan. Kaniyang pinahihiga ako sa sariwang pastulan: pinapatnubayan niya ako sa siping ng mga tubig na pahingahan. Kaniyang pinapananauli ang aking kaluluwa.” (Mga Awit 23:1–3)',
       familyPrompt: 'Kailan natin naramdaman na binabantayan ng Tagapagligtas ang ating pamilya tulad ng isang pastol sa kanyang mga tupa? Pag-usapan bilang pamilya kung ano ang kahulugan ng pagsunod sa Kanya nang may pagtitiwala, at kung paano mapupuno ng kapayapaan ng Mga Awit 23 ang ating tahanan ngayong linggo.',
       familyPromptGeneric: 'Basahin nang sama-sama bilang pamilya ang mga kabanata ngayong linggo at ibahagi kung ano ang tumatak sa bawat isa. Pag-usapan kung paano tayo itinuturo ng mga talatang ito sa Tagapagligtas at kung ano ang nais ninyong gawin ngayong linggo.'
+    },
+    popup: {
+      close: 'Isara',
+      viewDetails: 'Tingnan ang Detalye',
+      upcoming: 'Paparating na Aktibidad ng Ward',
+      dontShowAgain: 'Huwag nang ipakita ulit',
     },
     gallery: {
       badge: 'Samahan at mga Alaala',

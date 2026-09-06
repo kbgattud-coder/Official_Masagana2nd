@@ -16,6 +16,7 @@ import { BlogSection } from './components/BlogSection';
 import { ArticlePage } from './components/ArticlePage';
 import { ArticlesPage } from './components/ArticlesPage';
 import { Footer } from './components/Footer';
+import { ActivityPopup } from './components/ActivityPopup';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminAuth } from './data/adminStore';
@@ -329,6 +330,9 @@ export default function App() {
         {/* Ward History Section (1991–Present) */}
         <HistorySection lang={lang} />
       </main>
+
+      {/* Scheduled activity popup (shows as an event approaches) */}
+      <ActivityPopup lang={lang} onViewDetails={() => handleNavigate('bulletin')} />
 
       {/* Bento Footer with Admin Portal Link */}
       <Footer

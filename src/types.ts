@@ -42,6 +42,12 @@ export interface Announcement {
   actionUrl?: string;
   actionText?: string;
   createdAt?: string;
+  /** Event poster shown in the countdown popup (image URL or Drive link). */
+  posterImageUrl?: string;
+  /** Announce this event in a site-wide popup as the date approaches. */
+  showAsPopup?: boolean;
+  /** How many days before the event the popup starts appearing (default 7). */
+  popupDaysBefore?: number;
 }
 
 export interface Album {

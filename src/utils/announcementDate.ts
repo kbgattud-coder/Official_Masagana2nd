@@ -46,6 +46,27 @@ export function getAnnouncementEndDate(dateText?: string): { y: number; m: numbe
   return { y: year, m: month, d: Math.max(...days) };
 }
 
+/** First calendar day of the event, or null if undated. */
+export function getAnnouncementStartDate(dateText?: string): { y: number; m: number; d: number } | null {
+  if (!dateText || typeof dateText !== 'string') return null;
+  const text = dateText.toLowerCase();
+
+  const yearMatch = text.match(/\b(20\d{2})\b/);
+  if (!yearMatch) return null;
+  const year = Number(yearMatch[1]);
+
+  const monthKey = Object.keys(MONTHS).find((m) => text.includes(m));
+  if (monthKey === undefined) return null;
+  const month = MONTHS[monthKey];
+
+  const withoutYear = text.replace(yearMatch[1], ' ');
+  const days = (withoutYear.match(/\d{1,2}/g) || [])
+    .map(Number)
+    .filter((n) => n >= 1 && n <= 31);
+
+  return { y: year, m: month, d: days.length ? Math.min(...days) : 1 };
+}
+
 /** Today's calendar date in Manila, where the ward actually is. */
 export function getManilaToday(now: Date = new Date()): { y: number; m: number; d: number } {
   try {
@@ -68,4 +89,27 @@ export function isAnnouncementActive(dateText?: string, now: Date = new Date()):
   if (!end) return true; // undated or unparseable — keep showing it
   const today = getManilaToday(now);
   return Date.UTC(end.y, end.m, end.d) >= Date.UTC(today.y, today.m, today.d);
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * True while an event's popup should be showing: from `daysBefore` days
+ * ahead of the first day, through the end of the last day.
+ */
+export function isPopupWindowOpen(
+  dateText?: string,
+  daysBefore = 7,
+  now: Date = new Date()
+): boolean {
+  const start = getAnnouncementStartDate(dateText);
+  const end = getAnnouncementEndDate(dateText);
+  if (!start || !end) return false; // undated events have nothing to count down to
+
+  const today = getManilaToday(now);
+  const todayMs = Date.UTC(today.y, today.m, today.d);
+  const opensMs = Date.UTC(start.y, start.m, start.d) - Math.max(0, daysBefore) * DAY_MS;
+  const closesMs = Date.UTC(end.y, end.m, end.d);
+
+  return todayMs >= opensMs && todayMs <= closesMs;
 }
