@@ -11,6 +11,7 @@ import {
   Download
 } from 'lucide-react';
 import { Language, translations } from '../data/translations';
+import { getManilaWeekStamp } from '../utils/weekStamp';
 
 interface ComeFollowMeSectionProps {
   lang: Language;
@@ -34,7 +35,9 @@ export const ComeFollowMeSection: React.FC<ComeFollowMeSectionProps> = ({ lang }
   useEffect(() => {
     const apiLang = lang === 'tl' ? 'tgl' : 'eng';
     let cancelled = false;
-    fetch(`/api/cfm-lesson?lang=${apiLang}`)
+    // The week stamp changes every Monday, so a new week can never be
+    // served from a stale edge cache entry.
+    fetch(`/api/cfm-lesson?lang=${apiLang}&w=${getManilaWeekStamp()}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!cancelled && data && data.title && data.week && data.scriptures) {
