@@ -166,7 +166,7 @@ export const translations: Record<Language, Translations> = {
     hero: {
       stakeBadge: 'Antipolo Philippines Stake',
       title: 'Masagana 2nd Ward',
-      description: 'A Christ-centered congregation dedicated to worship, sincere fellowship, and loving community service in Antipolo, Rizal.',
+      description: 'A Christ-centered congregation dedicated to worship, sincere fellowship, and loving community service in Angono, Rizal.',
       viewBulletin: 'View Bulletin & Updates',
       exploreGallery: 'Explore Gallery',
       blinkingSacrament: 'Sacrament Meeting • Sunday 9:00 AM',
@@ -316,7 +316,7 @@ export const translations: Record<Language, Translations> = {
     hero: {
       stakeBadge: 'Antipolo Philippines Stake',
       title: 'Masagana 2nd Ward',
-      description: 'Isang kongregasyong nakasentro kay Jesucristo na tapat sa pagsamba, taos-pusong samahan, at mapagmahal na paglilingkod sa Antipolo, Rizal.',
+      description: 'Isang kongregasyong nakasentro kay Jesucristo na tapat sa pagsamba, taos-pusong samahan, at mapagmahal na paglilingkod sa Angono, Rizal.',
       viewBulletin: 'Tingnan ang Pahayagan at Balita',
       exploreGallery: 'Tingnan ang Galerya',
       blinkingSacrament: 'Sacrament Meeting • Linggo 9:00 AM',
